@@ -1,0 +1,297 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.Font?>
+
+<BorderPane xmlns="http://javafx.com/javafx"
+            xmlns:fx="http://javafx.com/fxml"
+            fx:controller="com.mp3player.presentation.view.MainController"
+            prefHeight="750.0" prefWidth="950.0"
+            styleClass="root">
+
+    <!-- Top: Menu Bar -->
+    <top>
+        <VBox>
+            <!-- Menu Bar -->
+            <MenuBar styleClass="menu-bar">
+                <Menu text="File">
+                    <MenuItem text="Open Folder..." onAction="#onLoadSongs" accelerator="Ctrl+O"/>
+                    <MenuItem text="Add Files..." onAction="#onAddFiles" accelerator="Ctrl+F"/>
+                    <SeparatorMenuItem/>
+                    <MenuItem text="Clear Playlist" onAction="#onClearPlaylist"/>
+                    <SeparatorMenuItem/>
+                    <MenuItem text="Exit" onAction="#onExit" accelerator="Alt+F4"/>
+                </Menu>
+                <Menu text="Playlist">
+                    <MenuItem text="Save Playlist..." onAction="#onSavePlaylist" accelerator="Ctrl+S"/>
+                    <MenuItem text="Load Playlist..." onAction="#onLoadPlaylist" accelerator="Ctrl+L"/>
+                    <SeparatorMenuItem/>
+                    <MenuItem text="Show Favorites" onAction="#onShowFavorites" accelerator="Ctrl+D"/>
+                    <CheckMenuItem fx:id="shuffleMenuItem" text="Shuffle" onAction="#onShuffleToggle" accelerator="Ctrl+H"/>
+                    <CheckMenuItem fx:id="repeatMenuItem" text="Repeat" onAction="#onRepeatToggle" accelerator="Ctrl+R"/>
+                </Menu>
+                <Menu text="Playback">
+                    <MenuItem text="Play/Pause" onAction="#onPlayPause" accelerator="Space"/>
+                    <MenuItem text="Stop" onAction="#onStop" accelerator="Ctrl+Alt+S"/>
+                    <MenuItem text="Next" onAction="#onNext" accelerator="Ctrl+Right"/>
+                    <MenuItem text="Previous" onAction="#onPrevious" accelerator="Ctrl+Left"/>
+                </Menu>
+                <Menu text="View">
+                    <CheckMenuItem fx:id="equalizerMenuItem" text="Show Equalizer" onAction="#onToggleEqualizer"/>
+                    <CheckMenuItem fx:id="visualizerMenuItem" text="Show Visualizer" onAction="#onToggleVisualizer"/>
+                </Menu>
+                <Menu text="Help">
+                    <MenuItem text="About" onAction="#onAbout"/>
+                    <MenuItem text="Keyboard Shortcuts" onAction="#onShowShortcuts"/>
+                </Menu>
+            </MenuBar>
+
+            <!-- Title Bar -->
+            <HBox styleClass="title-bar" alignment="CENTER_LEFT" spacing="20">
+                <padding>
+                    <Insets top="15" bottom="15" left="25" right="25"/>
+                </padding>
+                <Label text="🎵 MP3 Player" styleClass="title-label">
+                    <font>
+                        <Font name="System Bold" size="26.0"/>
+                    </font>
+                </Label>
+                <Region HBox.hgrow="ALWAYS"/>
+                <Label text="Clean Architecture + MVVM" styleClass="subtitle-label">
+                    <font>
+                        <Font size="11.0"/>
+                    </font>
+                </Label>
+            </HBox>
+        </VBox>
+    </top>
+
+    <!-- Center: Main Content -->
+    <center>
+        <VBox spacing="15">
+            <padding>
+                <Insets top="15" bottom="15" left="25" right="25"/>
+            </padding>
+
+            <!-- Now Playing Section -->
+            <HBox spacing="20" alignment="CENTER_LEFT" styleClass="now-playing-section">
+                <padding>
+                    <Insets top="15" bottom="15" left="20" right="20"/>
+                </padding>
+
+                <!-- Album Art Placeholder -->
+                <VBox alignment="CENTER" styleClass="album-art-placeholder"
+                      prefWidth="100" prefHeight="100" minWidth="100" minHeight="100">
+                    <Label text="♫" styleClass="album-art-icon">
+                        <font>
+                            <Font size="48.0"/>
+                        </font>
+                    </Label>
+                </VBox>
+
+                <!-- Song Info -->
+                <VBox spacing="5" VBox.vgrow="ALWAYS">
+                    <Label text="Now Playing" styleClass="label">
+                        <font>
+                            <Font size="11.0"/>
+                        </font>
+                    </Label>
+                    <Label fx:id="currentSongTitleLabel" text="No song selected" styleClass="now-playing-title"/>
+                    <Label fx:id="currentSongArtistLabel" text="Unknown Artist" styleClass="now-playing-artist"/>
+                </VBox>
+
+                <Region HBox.hgrow="ALWAYS"/>
+
+                <!-- Favorite Star Button -->
+                <Button fx:id="favoriteButton" text="☆" styleClass="favorite-button"
+                       onAction="#onToggleFavorite" prefWidth="50" prefHeight="50">
+                    <font>
+                        <Font size="28.0"/>
+                    </font>
+                </Button>
+            </HBox>
+
+            <!-- Playlist Selector -->
+            <HBox spacing="10" alignment="CENTER_LEFT" styleClass="playlist-selector">
+                <Label text="Playlist:" styleClass="playlist-label">
+                    <font>
+                        <Font size="13.0"/>
+                    </font>
+                </Label>
+                <ComboBox fx:id="playlistComboBox" prefWidth="200" styleClass="playlist-combo"/>
+                <Button text="+" onAction="#onCreatePlaylist" styleClass="icon-button">
+                    <tooltip>
+                        <Tooltip text="Create New Playlist"/>
+                    </tooltip>
+                </Button>
+                <Button text="✎" onAction="#onRenamePlaylist" styleClass="icon-button">
+                    <tooltip>
+                        <Tooltip text="Rename Current Playlist"/>
+                    </tooltip>
+                </Button>
+                <Button text="−" onAction="#onDeletePlaylist" styleClass="icon-button">
+                    <tooltip>
+                        <Tooltip text="Delete Current Playlist"/>
+                    </tooltip>
+                </Button>
+            </HBox>
+
+            <!-- Tabs for Playlist and Favorites -->
+            <TabPane fx:id="playlistTabs" VBox.vgrow="ALWAYS" styleClass="playlist-tabs">
+                <!-- All Songs Tab -->
+                <Tab text="All Songs" closable="false">
+                    <VBox spacing="10">
+                        <padding>
+                            <Insets top="10" bottom="0" left="0" right="0"/>
+                        </padding>
+
+                        <!-- Search and Controls Bar -->
+                        <HBox spacing="15" alignment="CENTER_LEFT">
+                            <Button text="📁 Open Folder" onAction="#onLoadSongs" styleClass="load-button"/>
+                            <Button text="➕ Add Files" onAction="#onAddFiles" styleClass="secondary-button"/>
+                            <TextField fx:id="searchField" promptText="🔍 Search songs..."
+                                      styleClass="search-field" HBox.hgrow="ALWAYS"/>
+                            <ToggleButton fx:id="shuffleButton" text="🔀" styleClass="toggle-button"
+                                         onAction="#onShuffleToggle">
+                                <font>
+                                    <Font size="14.0"/>
+                                </font>
+                                <tooltip>
+                                    <Tooltip text="Shuffle (Ctrl+H)"/>
+                                </tooltip>
+                            </ToggleButton>
+                            <ToggleButton fx:id="repeatButton" text="🔁" styleClass="toggle-button"
+                                         onAction="#onRepeatToggle">
+                                <font>
+                                    <Font size="14.0"/>
+                                </font>
+                                <tooltip>
+                                    <Tooltip text="Repeat (Ctrl+R)"/>
+                                </tooltip>
+                            </ToggleButton>
+                        </HBox>
+
+                        <!-- Playlist -->
+                        <ListView fx:id="playlistView" VBox.vgrow="ALWAYS" styleClass="playlist"/>
+                    </VBox>
+                </Tab>
+
+                <!-- Favorites Tab -->
+                <Tab text="⭐ Favorites" closable="false">
+                    <VBox spacing="10">
+                        <padding>
+                            <Insets top="10" bottom="0" left="0" right="0"/>
+                        </padding>
+
+                        <HBox spacing="10" alignment="CENTER_LEFT">
+                            <Label text="Your favorite songs" styleClass="favorites-label">
+                                <font>
+                                    <Font size="13.0"/>
+                                </font>
+                            </Label>
+                            <Region HBox.hgrow="ALWAYS"/>
+                            <Button text="Clear All Favorites" onAction="#onClearFavorites"
+                                   styleClass="secondary-button"/>
+                        </HBox>
+
+                        <ListView fx:id="favoritesView" VBox.vgrow="ALWAYS" styleClass="playlist"/>
+                    </VBox>
+                </Tab>
+            </TabPane>
+        </VBox>
+    </center>
+
+    <!-- Bottom: Player Controls -->
+    <bottom>
+        <VBox spacing="18" styleClass="player-controls">
+            <padding>
+                <Insets top="20" bottom="20" left="25" right="25"/>
+            </padding>
+
+            <!-- Progress Bar with Seek -->
+            <VBox spacing="8">
+                <HBox spacing="12" alignment="CENTER">
+                    <Label fx:id="currentTimeLabel" text="00:00" styleClass="time-label" minWidth="45"/>
+                    <Slider fx:id="progressSlider" HBox.hgrow="ALWAYS"
+                           styleClass="progress-slider" min="0" max="100" value="0"/>
+                    <Label fx:id="totalTimeLabel" text="00:00" styleClass="time-label" minWidth="45"/>
+                </HBox>
+            </VBox>
+
+            <!-- Playback Control Buttons -->
+            <HBox spacing="20" alignment="CENTER">
+                <Button text="⏮" onAction="#onPrevious" prefWidth="55" prefHeight="55"
+                       styleClass="control-button">
+                    <font>
+                        <Font size="20.0"/>
+                    </font>
+                    <tooltip>
+                        <Tooltip text="Previous (Ctrl+Left)"/>
+                    </tooltip>
+                </Button>
+                <Button fx:id="playPauseButton" text="▶" onAction="#onPlayPause"
+                       prefWidth="70" prefHeight="70" styleClass="control-button, play-button">
+                    <font>
+                        <Font size="24.0"/>
+                    </font>
+                    <tooltip>
+                        <Tooltip text="Play/Pause (Space)"/>
+                    </tooltip>
+                </Button>
+                <Button text="⏹" onAction="#onStop" prefWidth="55" prefHeight="55"
+                       styleClass="control-button">
+                    <font>
+                        <Font size="20.0"/>
+                    </font>
+                    <tooltip>
+                        <Tooltip text="Stop"/>
+                    </tooltip>
+                </Button>
+                <Button text="⏭" onAction="#onNext" prefWidth="55" prefHeight="55"
+                       styleClass="control-button">
+                    <font>
+                        <Font size="20.0"/>
+                    </font>
+                    <tooltip>
+                        <Tooltip text="Next (Ctrl+Right)"/>
+                    </tooltip>
+                </Button>
+            </HBox>
+
+            <!-- Volume and Speed Controls -->
+            <HBox spacing="30" alignment="CENTER">
+                <!-- Volume Control -->
+                <HBox spacing="15" alignment="CENTER">
+                    <Label fx:id="volumeIcon" text="🔊" styleClass="volume-label"/>
+                    <Slider fx:id="volumeSlider" min="0" max="1" value="0.5"
+                           prefWidth="200" styleClass="volume-slider"/>
+                    <Label fx:id="volumePercentLabel" text="50%" styleClass="label" minWidth="40">
+                        <font>
+                            <Font size="12.0"/>
+                        </font>
+                    </Label>
+                </HBox>
+
+                <Separator orientation="VERTICAL" prefHeight="30"/>
+
+                <!-- Playback Speed Control -->
+                <HBox spacing="15" alignment="CENTER">
+                    <Label text="Speed:" styleClass="label">
+                        <font>
+                            <Font size="12.0"/>
+                        </font>
+                    </Label>
+                    <Slider fx:id="speedSlider" min="0.5" max="2.0" value="1.0"
+                           prefWidth="150" styleClass="speed-slider" showTickMarks="false"/>
+                    <Label fx:id="speedLabel" text="1.0x" styleClass="label" minWidth="45">
+                        <font>
+                            <Font size="12.0"/>
+                        </font>
+                    </Label>
+                </HBox>
+            </HBox>
+        </VBox>
+    </bottom>
+</BorderPane>

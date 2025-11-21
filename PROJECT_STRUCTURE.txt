@@ -1,0 +1,132 @@
+MP3 Player Project Structure
+============================
+
+MP3 player/
+│
+├── 📄 pom.xml                           # Maven configuration
+├── 📄 module-info.java                  # Java module definition
+├── 📄 .gitignore                        # Git ignore rules
+│
+├── 📚 Documentation
+│   ├── 📄 README.md                     # Full project documentation
+│   ├── 📄 QUICKSTART.md                 # Quick start guide (3 steps)
+│   ├── 📄 ARCHITECTURE.md               # Architecture diagrams & explanations
+│   ├── 📄 PROJECT_SUMMARY.md            # Project overview & summary
+│   └── 📄 PROJECT_STRUCTURE.txt         # This file
+│
+└── src/main/
+    │
+    ├── java/com/mp3player/
+    │   │
+    │   ├── 📄 Main.java                 # 🚀 Application Entry Point
+    │   │
+    │   ├── 📂 domain/                   # 🎯 DOMAIN LAYER (Business Logic)
+    │   │   │
+    │   │   ├── 📂 entity/              # Core Entities
+    │   │   │   ├── 📄 Song.java         # Song entity (id, title, artist, path)
+    │   │   │   └── 📄 Playlist.java     # Playlist entity (songs, currentIndex)
+    │   │   │
+    │   │   ├── 📂 repository/          # Repository Interfaces (Abstractions)
+    │   │   │   ├── 📄 MusicPlayerRepository.java    # Player interface
+    │   │   │   └── 📄 PlaylistRepository.java       # Playlist interface
+    │   │   │
+    │   │   └── 📂 usecase/             # Use Cases (Business Operations)
+    │   │       ├── 📄 PlaySongUseCase.java          # Play a song
+    │   │       ├── 📄 PauseSongUseCase.java         # Pause playback
+    │   │       ├── 📄 ResumeSongUseCase.java        # Resume playback
+    │   │       ├── 📄 StopSongUseCase.java          # Stop playback
+    │   │       ├── 📄 SetVolumeUseCase.java         # Set volume
+    │   │       └── 📄 LoadSongsUseCase.java         # Load songs from folder
+    │   │
+    │   ├── 📂 data/                    # 💾 DATA LAYER (Implementations)
+    │   │   │
+    │   │   └── 📂 repository/          # Repository Implementations
+    │   │       ├── 📄 JavaFXMusicPlayerRepository.java  # JavaFX Media API impl
+    │   │       └── 📄 FilePlaylistRepository.java       # File system impl
+    │   │
+    │   └── 📂 presentation/            # 🎨 PRESENTATION LAYER (UI - MVVM)
+    │       │
+    │       ├── 📂 viewmodel/           # ViewModels (MVVM)
+    │       │   └── 📄 MusicPlayerViewModel.java    # Main ViewModel
+    │       │                                        # - Observable Properties
+    │       │                                        # - Commands for UI
+    │       │
+    │       └── 📂 view/                # Views & Controllers
+    │           └── 📄 MainController.java           # Main Controller
+    │
+    └── resources/com/mp3player/presentation/view/
+        │
+        ├── 📄 main-view.fxml           # 🎨 UI Layout (FXML)
+        └── 📄 style.css                # 🎨 Styling (Dark Theme)
+
+
+===============================================
+Clean Architecture Layers
+===============================================
+
+┌─────────────────────────────────────┐
+│   PRESENTATION LAYER (UI)           │
+│   - View (FXML + Controller)        │
+│   - ViewModel (Observable props)    │
+│   - MVVM Pattern                    │
+└────────────┬────────────────────────┘
+             │ Uses
+┌────────────▼────────────────────────┐
+│   DOMAIN LAYER (Business Logic)    │
+│   - Entities (Song, Playlist)       │
+│   - Use Cases (Play, Pause, etc)    │
+│   - Repository Interfaces           │
+│   - Pure Business Rules             │
+└────────────┬────────────────────────┘
+             │ Implements
+┌────────────▼────────────────────────┐
+│   DATA LAYER (Implementation)      │
+│   - Repository Implementations      │
+│   - JavaFX Media API                │
+│   - File System Operations          │
+└─────────────────────────────────────┘
+
+===============================================
+Dependency Flow
+===============================================
+
+Presentation ──► Domain ◄── Data
+     │                        │
+     └────────────────────────┘
+        (All depend on Domain)
+
+===============================================
+Files Count
+===============================================
+
+Java Files:      16 classes
+FXML Files:       1 view
+CSS Files:        1 stylesheet
+Config Files:     2 (pom.xml, module-info.java)
+Documentation:    5 markdown files
+
+Total:           25 files
+
+===============================================
+Technologies Used
+===============================================
+
+✓ Java 17
+✓ JavaFX 21 (UI & Media)
+✓ Maven (Build Tool)
+✓ Clean Architecture
+✓ MVVM Pattern
+✓ Repository Pattern
+✓ Use Case Pattern
+✓ Dependency Inversion
+
+===============================================
+How to Run
+===============================================
+
+1. mvn clean install    # Install dependencies
+2. mvn javafx:run       # Run application
+
+That's it! 🎉
+
+===============================================

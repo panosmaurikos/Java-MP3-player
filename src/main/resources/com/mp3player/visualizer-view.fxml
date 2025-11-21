@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.canvas.Canvas?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<VBox xmlns="http://javafx.com/javafx"
+      xmlns:fx="http://javafx.com/fxml"
+      fx:controller="com.mp3player.presentation.view.VisualizerController"
+      spacing="15"
+      style="-fx-background-color: linear-gradient(to bottom, #1a1a2e, #16213e);"
+      prefWidth="700"
+      prefHeight="450">
+
+    <padding>
+        <Insets top="20" right="20" bottom="20" left="20"/>
+    </padding>
+
+    <!-- Title -->
+    <Label text="📊 Audio Visualizer" styleClass="title-label"
+           style="-fx-font-size: 24px; -fx-font-weight: bold; -fx-text-fill: white;"/>
+
+    <!-- Visualizer Type Selector -->
+    <HBox spacing="10" alignment="CENTER_LEFT">
+        <Label text="Visualizer Type:" style="-fx-text-fill: white; -fx-font-size: 14px;"/>
+        <ComboBox fx:id="visualizerTypeComboBox" prefWidth="200"/>
+
+        <Region HBox.hgrow="ALWAYS"/>
+
+        <Label text="Color Scheme:" style="-fx-text-fill: white; -fx-font-size: 14px;"/>
+        <ComboBox fx:id="colorSchemeComboBox" prefWidth="150"/>
+    </HBox>
+
+    <!-- Canvas for visualization -->
+    <StackPane VBox.vgrow="ALWAYS" style="-fx-background-color: #0f0f1e; -fx-background-radius: 10;">
+        <Canvas fx:id="visualizerCanvas" width="650" height="300"/>
+    </StackPane>
+
+    <!-- Controls -->
+    <HBox spacing="15" alignment="CENTER">
+        <CheckBox fx:id="enableCheckBox" text="Enable Visualizer" selected="true"
+                  style="-fx-text-fill: white; -fx-font-size: 14px;"/>
+
+        <Separator orientation="VERTICAL"/>
+
+        <Label text="Sensitivity:" style="-fx-text-fill: white; -fx-font-size: 14px;"/>
+        <Slider fx:id="sensitivitySlider" min="0.5" max="2.0" value="1.0"
+                prefWidth="150" showTickMarks="false"/>
+        <Label fx:id="sensitivityLabel" text="1.0x"
+               style="-fx-text-fill: #4ecca3; -fx-font-size: 12px;"/>
+    </HBox>
+
+</VBox>

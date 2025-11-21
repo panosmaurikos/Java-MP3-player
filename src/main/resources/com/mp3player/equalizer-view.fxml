@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<VBox xmlns="http://javafx.com/javafx"
+      xmlns:fx="http://javafx.com/fxml"
+      fx:controller="com.mp3player.presentation.view.EqualizerController"
+      spacing="15"
+      style="-fx-background-color: linear-gradient(to bottom, #1a1a2e, #16213e);"
+      prefWidth="600"
+      prefHeight="400">
+
+    <padding>
+        <Insets top="20" right="20" bottom="20" left="20"/>
+    </padding>
+
+    <!-- Title -->
+    <Label text="🎚️ Equalizer" styleClass="title-label"
+           style="-fx-font-size: 24px; -fx-font-weight: bold; -fx-text-fill: white;"/>
+
+    <!-- Preset Selector -->
+    <HBox spacing="10" alignment="CENTER_LEFT">
+        <Label text="Preset:" style="-fx-text-fill: white; -fx-font-size: 14px;"/>
+        <ComboBox fx:id="presetComboBox" prefWidth="200"/>
+        <Region HBox.hgrow="ALWAYS"/>
+        <Button text="Reset" onAction="#onReset" styleClass="control-button"/>
+    </HBox>
+
+    <!-- Frequency Bands -->
+    <HBox spacing="15" alignment="CENTER" VBox.vgrow="ALWAYS">
+        <!-- 32 Hz -->
+        <VBox spacing="5" alignment="BOTTOM_CENTER">
+            <Slider fx:id="slider32Hz" orientation="VERTICAL" min="-12" max="12" value="0"
+                    prefHeight="200" showTickMarks="false" showTickLabels="false"/>
+            <Label fx:id="label32Hz" text="0 dB" style="-fx-text-fill: #4ecca3; -fx-font-size: 11px;"/>
+            <Label text="32Hz" style="-fx-text-fill: white; -fx-font-size: 10px;"/>
+        </VBox>
+
+        <!-- 64 Hz -->
+        <VBox spacing="5" alignment="BOTTOM_CENTER">
+            <Slider fx:id="slider64Hz" orientation="VERTICAL" min="-12" max="12" value="0"
+                    prefHeight="200" showTickMarks="false" showTickLabels="false"/>
+            <Label fx:id="label64Hz" text="0 dB" style="-fx-text-fill: #4ecca3; -fx-font-size: 11px;"/>
+            <Label text="64Hz" style="-fx-text-fill: white; -fx-font-size: 10px;"/>
+        </VBox>
+
+        <!-- 125 Hz -->
+        <VBox spacing="5" alignment="BOTTOM_CENTER">
+            <Slider fx:id="slider125Hz" orientation="VERTICAL" min="-12" max="12" value="0"
+                    prefHeight="200" showTickMarks="false" showTickLabels="false"/>
+            <Label fx:id="label125Hz" text="0 dB" style="-fx-text-fill: #4ecca3; -fx-font-size: 11px;"/>
+            <Label text="125Hz" style="-fx-text-fill: white; -fx-font-size: 10px;"/>
+        </VBox>
+
+        <!-- 250 Hz -->
+        <VBox spacing="5" alignment="BOTTOM_CENTER">
+            <Slider fx:id="slider250Hz" orientation="VERTICAL" min="-12" max="12" value="0"
+                    prefHeight="200" showTickMarks="false" showTickLabels="false"/>
+            <Label fx:id="label250Hz" text="0 dB" style="-fx-text-fill: #4ecca3; -fx-font-size: 11px;"/>
+            <Label text="250Hz" style="-fx-text-fill: white; -fx-font-size: 10px;"/>
+        </VBox>
+
+        <!-- 500 Hz -->
+        <VBox spacing="5" alignment="BOTTOM_CENTER">
+            <Slider fx:id="slider500Hz" orientation="VERTICAL" min="-12" max="12" value="0"
+                    prefHeight="200" showTickMarks="false" showTickLabels="false"/>
+            <Label fx:id="label500Hz" text="0 dB" style="-fx-text-fill: #4ecca3; -fx-font-size: 11px;"/>
+            <Label text="500Hz" style="-fx-text-fill: white; -fx-font-size: 10px;"/>
+        </VBox>
+
+        <!-- 1 kHz -->
+        <VBox spacing="5" alignment="BOTTOM_CENTER">
+            <Slider fx:id="slider1kHz" orientation="VERTICAL" min="-12" max="12" value="0"
+                    prefHeight="200" showTickMarks="false" showTickLabels="false"/>
+            <Label fx:id="label1kHz" text="0 dB" style="-fx-text-fill: #4ecca3; -fx-font-size: 11px;"/>
+            <Label text="1kHz" style="-fx-text-fill: white; -fx-font-size: 10px;"/>
+        </VBox>
+
+        <!-- 2 kHz -->
+        <VBox spacing="5" alignment="BOTTOM_CENTER">
+            <Slider fx:id="slider2kHz" orientation="VERTICAL" min="-12" max="12" value="0"
+                    prefHeight="200" showTickMarks="false" showTickLabels="false"/>
+            <Label fx:id="label2kHz" text="0 dB" style="-fx-text-fill: #4ecca3; -fx-font-size: 11px;"/>
+            <Label text="2kHz" style="-fx-text-fill: white; -fx-font-size: 10px;"/>
+        </VBox>
+
+        <!-- 4 kHz -->
+        <VBox spacing="5" alignment="BOTTOM_CENTER">
+            <Slider fx:id="slider4kHz" orientation="VERTICAL" min="-12" max="12" value="0"
+                    prefHeight="200" showTickMarks="false" showTickLabels="false"/>
+            <Label fx:id="label4kHz" text="0 dB" style="-fx-text-fill: #4ecca3; -fx-font-size: 11px;"/>
+            <Label text="4kHz" style="-fx-text-fill: white; -fx-font-size: 10px;"/>
+        </VBox>
+
+        <!-- 8 kHz -->
+        <VBox spacing="5" alignment="BOTTOM_CENTER">
+            <Slider fx:id="slider8kHz" orientation="VERTICAL" min="-12" max="12" value="0"
+                    prefHeight="200" showTickMarks="false" showTickLabels="false"/>
+            <Label fx:id="label8kHz" text="0 dB" style="-fx-text-fill: #4ecca3; -fx-font-size: 11px;"/>
+            <Label text="8kHz" style="-fx-text-fill: white; -fx-font-size: 10px;"/>
+        </VBox>
+
+        <!-- 16 kHz -->
+        <VBox spacing="5" alignment="BOTTOM_CENTER">
+            <Slider fx:id="slider16kHz" orientation="VERTICAL" min="-12" max="12" value="0"
+                    prefHeight="200" showTickMarks="false" showTickLabels="false"/>
+            <Label fx:id="label16kHz" text="0 dB" style="-fx-text-fill: #4ecca3; -fx-font-size: 11px;"/>
+            <Label text="16kHz" style="-fx-text-fill: white; -fx-font-size: 10px;"/>
+        </VBox>
+    </HBox>
+
+    <!-- Enable/Disable Toggle -->
+    <HBox spacing="10" alignment="CENTER">
+        <CheckBox fx:id="enableCheckBox" text="Enable Equalizer" selected="true"
+                  style="-fx-text-fill: white; -fx-font-size: 14px;"/>
+    </HBox>
+
+</VBox>
