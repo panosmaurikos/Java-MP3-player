@@ -1,18 +1,36 @@
 package com.mp3player.presentation.view;
 
+import java.io.File;
+
 import com.mp3player.data.repository.FilePlaylistRepository;
 import com.mp3player.data.repository.JavaFXMusicPlayerRepository;
 import com.mp3player.domain.entity.Song;
-import com.mp3player.domain.usecase.*;
+import com.mp3player.domain.usecase.LoadPlaylistFileUseCase;
+import com.mp3player.domain.usecase.LoadSongsUseCase;
+import com.mp3player.domain.usecase.PauseSongUseCase;
+import com.mp3player.domain.usecase.PlaySongUseCase;
+import com.mp3player.domain.usecase.ResumeSongUseCase;
+import com.mp3player.domain.usecase.SavePlaylistUseCase;
+import com.mp3player.domain.usecase.SetPlaybackSpeedUseCase;
+import com.mp3player.domain.usecase.SetVolumeUseCase;
+import com.mp3player.domain.usecase.StopSongUseCase;
 import com.mp3player.presentation.viewmodel.MusicPlayerViewModel;
+
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.fxml.FXML;
-import javafx.scene.control.*;
+import javafx.scene.control.Button;
+import javafx.scene.control.CheckMenuItem;
+import javafx.scene.control.ComboBox;
+import javafx.scene.control.Label;
+import javafx.scene.control.ListView;
+import javafx.scene.control.Slider;
+import javafx.scene.control.TabPane;
+import javafx.scene.control.TextField;
+import javafx.scene.control.TextInputDialog;
+import javafx.scene.control.ToggleButton;
 import javafx.stage.DirectoryChooser;
 import javafx.util.Duration;
-
-import java.io.File;
 
 public class MainController {
     // UI Components
@@ -50,6 +68,9 @@ public class MainController {
         setupBindings();
         setupProgressUpdater();
         setupSeekFunctionality();
+        // Force favorite button to always start as empty heart
+        favoriteButton.setText("♡");
+        favoriteButton.getStyleClass().remove("active");
     }
 
     private void setupDependencies() {
@@ -107,9 +128,9 @@ public class MainController {
         // Handle double-click to play song (All Songs tab)
         playlistView.setOnMouseClicked(event -> {
             if (event.getClickCount() == 2) {
-                int selectedIndex = playlistView.getSelectionModel().getSelectedIndex();
-                if (selectedIndex >= 0) {
-                    viewModel.selectSong(selectedIndex);
+                Song selectedSong = playlistView.getSelectionModel().getSelectedItem();
+                if (selectedSong != null) {
+                    viewModel.playSong(selectedSong);
                 }
             }
         });
@@ -153,6 +174,8 @@ public class MainController {
                 progressSlider.setValue(newVal.doubleValue() * 100);
             }
         });
+        favoriteButton.setText("♡");
+        favoriteButton.getStyleClass().remove("active");
 
         // Bind volume slider
         volumeSlider.valueProperty().addListener((obs, oldVal, newVal) -> {

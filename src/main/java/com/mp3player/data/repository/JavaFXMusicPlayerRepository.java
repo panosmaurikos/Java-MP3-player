@@ -16,6 +16,8 @@ public class JavaFXMusicPlayerRepository implements MusicPlayerRepository {
     private double[] equalizerGains = new double[10]; // Store current equalizer settings
     private boolean equalizerEnabled = false;
     private Runnable onEndOfMediaListener;
+    private double currentVolume = 0.5; // Store current volume
+    private double currentPlaybackSpeed = 1.0; // Store current playback speed
 
     @Override
     public void play(Song song) {
@@ -26,7 +28,9 @@ public class JavaFXMusicPlayerRepository implements MusicPlayerRepository {
             Media media = new Media(file.toURI().toString());
             mediaPlayer = new MediaPlayer(media);
 
-            // Apply equalizer settings to new media player
+            // Apply saved settings to new media player
+            mediaPlayer.setVolume(currentVolume);
+            mediaPlayer.setRate(currentPlaybackSpeed);
             applyEqualizerSettings();
 
             // Setup end of media listener for auto-advance
@@ -70,6 +74,7 @@ public class JavaFXMusicPlayerRepository implements MusicPlayerRepository {
 
     @Override
     public void setVolume(double volume) {
+        this.currentVolume = volume;
         if (mediaPlayer != null) {
             mediaPlayer.setVolume(volume);
         }
@@ -77,6 +82,7 @@ public class JavaFXMusicPlayerRepository implements MusicPlayerRepository {
 
     @Override
     public void setPlaybackSpeed(double speed) {
+        this.currentPlaybackSpeed = speed;
         if (mediaPlayer != null) {
             mediaPlayer.setRate(speed);
         }

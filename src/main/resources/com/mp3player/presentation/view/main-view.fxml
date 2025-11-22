@@ -98,8 +98,8 @@
 
                 <Region HBox.hgrow="ALWAYS"/>
 
-                <!-- Favorite Star Button -->
-                <Button fx:id="favoriteButton" text="☆" styleClass="favorite-button"
+                <!-- Favorite Heart Button -->
+                <Button fx:id="favoriteButton" text="♡" styleClass="favorite-button"
                        onAction="#onToggleFavorite" prefWidth="50" prefHeight="50">
                     <font>
                         <Font size="28.0"/>
