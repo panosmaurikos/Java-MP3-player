@@ -440,6 +440,10 @@ public class MainController {
             );
             javafx.scene.Parent root = loader.load();
 
+            // Get the controller and set the player repository
+            EqualizerController controller = loader.getController();
+            controller.setPlayerRepository(playerRepository);
+
             javafx.stage.Stage equalizerStage = new javafx.stage.Stage();
             equalizerStage.setTitle("Equalizer");
             equalizerStage.setScene(new javafx.scene.Scene(root));
@@ -460,6 +464,10 @@ public class MainController {
             );
             javafx.scene.Parent root = loader.load();
 
+            // Get the controller and set the player repository
+            VisualizerController controller = loader.getController();
+            controller.setPlayerRepository(playerRepository);
+
             javafx.stage.Stage visualizerStage = new javafx.stage.Stage();
             visualizerStage.setTitle("Audio Visualizer");
             visualizerStage.setScene(new javafx.scene.Scene(root));
@@ -467,7 +475,6 @@ public class MainController {
             visualizerStage.setResizable(false);
 
             // Cleanup when window is closed
-            VisualizerController controller = loader.getController();
             visualizerStage.setOnCloseRequest(event -> controller.cleanup());
 
             visualizerStage.show();
@@ -481,12 +488,13 @@ public class MainController {
     private void onAbout() {
         showInfo("About MP3 Player",
             "MP3 Player v4.0\n\n" +
-            "A modern music player built with JavaFX\n" +
+            "A modern music player built with JavaFX\n\n" +
             "Features:\n" +
             "• Play/Pause/Stop controls\n" +
             "• Shuffle & Repeat modes\n" +
             "• Search & Filter songs\n" +
             "• Favorites system\n" +
+            "• Multiple playlists\n" +
             "• Playback speed control (0.5x - 2.0x)\n" +
             "• Save/Load Playlists (.m3u)\n" +
             "• 10-band Equalizer\n" +
@@ -514,10 +522,10 @@ public class MainController {
 
     private void updateFavoriteButton(Song song) {
         if (song != null && song.isFavorite()) {
-            favoriteButton.setText("★");
+            favoriteButton.setText("❤");
             favoriteButton.getStyleClass().add("active");
         } else {
-            favoriteButton.setText("☆");
+            favoriteButton.setText("♡");
             favoriteButton.getStyleClass().remove("active");
         }
     }

@@ -1,5 +1,6 @@
 package com.mp3player.presentation.view;
 
+import com.mp3player.data.repository.JavaFXMusicPlayerRepository;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 
@@ -10,6 +11,8 @@ public class EqualizerController {
 
     @FXML private ComboBox<String> presetComboBox;
     @FXML private CheckBox enableCheckBox;
+
+    private JavaFXMusicPlayerRepository playerRepository;
 
     // Frequency band sliders
     @FXML private Slider slider32Hz;
@@ -76,6 +79,7 @@ public class EqualizerController {
             final int index = i;
             sliders[i].valueProperty().addListener((obs, oldVal, newVal) -> {
                 updateLabel(index, newVal.doubleValue());
+                updateRepositoryEqualizer();
             });
         }
 
@@ -90,7 +94,12 @@ public class EqualizerController {
         // Setup enable/disable checkbox
         enableCheckBox.selectedProperty().addListener((obs, oldVal, newVal) -> {
             setEqualizerEnabled(newVal);
+            updateRepositoryEqualizer();
         });
+    }
+
+    public void setPlayerRepository(JavaFXMusicPlayerRepository repository) {
+        this.playerRepository = repository;
     }
 
     private void updateLabel(int index, double value) {
@@ -138,5 +147,12 @@ public class EqualizerController {
 
     public boolean isEnabled() {
         return enableCheckBox.isSelected();
+    }
+
+    private void updateRepositoryEqualizer() {
+        if (playerRepository != null) {
+            playerRepository.setEqualizerEnabled(enableCheckBox.isSelected());
+            playerRepository.setAllEqualizerBands(getBandValues());
+        }
     }
 }

@@ -1,10 +1,12 @@
 package com.mp3player.presentation.view;
 
+import com.mp3player.data.repository.JavaFXMusicPlayerRepository;
 import javafx.animation.AnimationTimer;
 import javafx.fxml.FXML;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.*;
+import javafx.scene.media.MediaPlayer;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.CycleMethod;
 import javafx.scene.paint.LinearGradient;
@@ -24,8 +26,9 @@ public class VisualizerController {
     private GraphicsContext gc;
     private AnimationTimer animationTimer;
     private Random random = new Random();
+    private JavaFXMusicPlayerRepository playerRepository;
 
-    // Simulated audio data
+    // Audio spectrum data from MediaPlayer
     private double[] spectrumData = new double[64];
     private int currentType = 0;
     private String currentColorScheme = "Green Gradient";
@@ -101,15 +104,60 @@ public class VisualizerController {
     }
 
     private void updateSpectrumData() {
-        // Simulate audio spectrum data (in real implementation, get from MediaPlayer)
-        double sensitivity = sensitivitySlider.getValue();
-        for (int i = 0; i < spectrumData.length; i++) {
-            // Smooth decay
-            spectrumData[i] *= 0.85;
-            // Add random peaks to simulate audio
-            if (random.nextDouble() > 0.7) {
-                spectrumData[i] = Math.min(1.0, spectrumData[i] + random.nextDouble() * 0.5 * sensitivity);
+        if (playerRepository == null) {
+            return;
+        }
+
+        MediaPlayer mediaPlayer = playerRepository.getMediaPlayer();
+        if (mediaPlayer == null) {
+            // No active player, decay to zero
+            for (int i = 0; i < spectrumData.length; i++) {
+                spectrumData[i] *= 0.8;
             }
+            return;
+        }
+
+        // Get real audio spectrum data from MediaPlayer
+        double sensitivity = sensitivitySlider.getValue();
+        float[] magnitudes = mediaPlayer.getAudioSpectrumNumBands() > 0
+            ? new float[mediaPlayer.getAudioSpectrumNumBands()]
+            : new float[64];
+
+        // Snapshot current spectrum
+        for (int i = 0; i < Math.min(spectrumData.length, magnitudes.length); i++) {
+            float magnitude = magnitudes[i];
+            // Convert dB to 0-1 range (typical range is -60dB to 0dB)
+            double normalized = (magnitude + 60.0) / 60.0;
+            normalized = Math.max(0.0, Math.min(1.0, normalized));
+
+            // Apply sensitivity and smooth
+            spectrumData[i] = spectrumData[i] * 0.7 + normalized * sensitivity * 0.3;
+        }
+    }
+
+    public void setPlayerRepository(JavaFXMusicPlayerRepository repository) {
+        this.playerRepository = repository;
+
+        if (repository != null && repository.getMediaPlayer() != null) {
+            MediaPlayer mediaPlayer = repository.getMediaPlayer();
+
+            // Configure audio spectrum listener
+            mediaPlayer.setAudioSpectrumNumBands(spectrumData.length);
+            mediaPlayer.setAudioSpectrumInterval(0.05); // 50ms refresh
+
+            // Set listener to update spectrum data
+            mediaPlayer.setAudioSpectrumListener((timestamp, duration, magnitudes, phases) -> {
+                for (int i = 0; i < Math.min(spectrumData.length, magnitudes.length); i++) {
+                    float magnitude = magnitudes[i];
+                    // Convert dB to 0-1 range
+                    double normalized = (magnitude + 60.0) / 60.0;
+                    normalized = Math.max(0.0, Math.min(1.0, normalized));
+
+                    // Smooth the data
+                    double sensitivity = sensitivitySlider.getValue();
+                    spectrumData[i] = spectrumData[i] * 0.6 + normalized * sensitivity * 0.4;
+                }
+            });
         }
     }
 

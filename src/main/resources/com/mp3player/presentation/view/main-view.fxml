@@ -58,12 +58,6 @@
                         <Font name="System Bold" size="26.0"/>
                     </font>
                 </Label>
-                <Region HBox.hgrow="ALWAYS"/>
-                <Label text="Clean Architecture + MVVM" styleClass="subtitle-label">
-                    <font>
-                        <Font size="11.0"/>
-                    </font>
-                </Label>
             </HBox>
         </VBox>
     </top>
@@ -179,7 +173,7 @@
                 </Tab>
 
                 <!-- Favorites Tab -->
-                <Tab text="⭐ Favorites" closable="false">
+                <Tab text="❤ Favorites" closable="false">
                     <VBox spacing="10">
                         <padding>
                             <Insets top="10" bottom="0" left="0" right="0"/>

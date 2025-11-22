@@ -2,6 +2,8 @@ package com.mp3player.data.repository;
 
 import com.mp3player.domain.entity.Song;
 import com.mp3player.domain.repository.MusicPlayerRepository;
+import javafx.scene.media.AudioEqualizer;
+import javafx.scene.media.EqualizerBand;
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
 import javafx.util.Duration;
@@ -11,6 +13,8 @@ import java.io.File;
 public class JavaFXMusicPlayerRepository implements MusicPlayerRepository {
     private MediaPlayer mediaPlayer;
     private boolean isPaused = false;
+    private double[] equalizerGains = new double[10]; // Store current equalizer settings
+    private boolean equalizerEnabled = false;
 
     @Override
     public void play(Song song) {
@@ -20,6 +24,10 @@ public class JavaFXMusicPlayerRepository implements MusicPlayerRepository {
             File file = new File(song.getFilePath());
             Media media = new Media(file.toURI().toString());
             mediaPlayer = new MediaPlayer(media);
+
+            // Apply equalizer settings to new media player
+            applyEqualizerSettings();
+
             mediaPlayer.play();
             isPaused = false;
         } catch (Exception e) {
@@ -103,5 +111,45 @@ public class JavaFXMusicPlayerRepository implements MusicPlayerRepository {
 
     public MediaPlayer getMediaPlayer() {
         return mediaPlayer;
+    }
+
+    // Equalizer methods
+    public void setEqualizerEnabled(boolean enabled) {
+        this.equalizerEnabled = enabled;
+        applyEqualizerSettings();
+    }
+
+    public void setEqualizerBand(int bandIndex, double gain) {
+        if (bandIndex >= 0 && bandIndex < equalizerGains.length) {
+            equalizerGains[bandIndex] = gain;
+            applyEqualizerSettings();
+        }
+    }
+
+    public void setAllEqualizerBands(double[] gains) {
+        if (gains != null && gains.length == equalizerGains.length) {
+            System.arraycopy(gains, 0, equalizerGains, 0, gains.length);
+            applyEqualizerSettings();
+        }
+    }
+
+    private void applyEqualizerSettings() {
+        if (mediaPlayer == null) {
+            return;
+        }
+
+        AudioEqualizer equalizer = mediaPlayer.getAudioEqualizer();
+        if (equalizer == null) {
+            return;
+        }
+
+        equalizer.setEnabled(equalizerEnabled);
+
+        if (equalizerEnabled && equalizer.getBands().size() >= equalizerGains.length) {
+            for (int i = 0; i < equalizerGains.length; i++) {
+                EqualizerBand band = equalizer.getBands().get(i);
+                band.setGain(equalizerGains[i]);
+            }
+        }
     }
 }
