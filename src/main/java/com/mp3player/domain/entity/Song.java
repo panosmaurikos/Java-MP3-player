@@ -58,7 +58,7 @@ public class Song {
     }
 
     public String toDetailedString() {
-        return (isFavorite ? "⭐ " : "") + title + " - " + artist;
+        return (isFavorite ? "❤ " : "") + title + " - " + artist;
     }
 
     @Override

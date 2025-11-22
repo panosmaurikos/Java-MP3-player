@@ -117,22 +117,32 @@ public class VisualizerController {
             return;
         }
 
-        // Get real audio spectrum data from MediaPlayer
-        double sensitivity = sensitivitySlider.getValue();
-        float[] magnitudes = mediaPlayer.getAudioSpectrumNumBands() > 0
-            ? new float[mediaPlayer.getAudioSpectrumNumBands()]
-            : new float[64];
+        // Setup listener if not already set for this player
+        setupAudioListener(mediaPlayer);
+    }
 
-        // Snapshot current spectrum
-        for (int i = 0; i < Math.min(spectrumData.length, magnitudes.length); i++) {
-            float magnitude = magnitudes[i];
-            // Convert dB to 0-1 range (typical range is -60dB to 0dB)
-            double normalized = (magnitude + 60.0) / 60.0;
-            normalized = Math.max(0.0, Math.min(1.0, normalized));
-
-            // Apply sensitivity and smooth
-            spectrumData[i] = spectrumData[i] * 0.7 + normalized * sensitivity * 0.3;
+    private void setupAudioListener(MediaPlayer mediaPlayer) {
+        if (mediaPlayer == null) {
+            return;
         }
+
+        // Configure audio spectrum
+        mediaPlayer.setAudioSpectrumNumBands(spectrumData.length);
+        mediaPlayer.setAudioSpectrumInterval(0.05); // 50ms refresh
+
+        // Set listener to update spectrum data
+        mediaPlayer.setAudioSpectrumListener((timestamp, duration, magnitudes, phases) -> {
+            for (int i = 0; i < Math.min(spectrumData.length, magnitudes.length); i++) {
+                float magnitude = magnitudes[i];
+                // Convert dB to 0-1 range (typical range is -60dB to 0dB)
+                double normalized = (magnitude + 60.0) / 60.0;
+                normalized = Math.max(0.0, Math.min(1.0, normalized));
+
+                // Smooth the data
+                double sensitivity = sensitivitySlider.getValue();
+                spectrumData[i] = spectrumData[i] * 0.6 + normalized * sensitivity * 0.4;
+            }
+        });
     }
 
     public void setPlayerRepository(JavaFXMusicPlayerRepository repository) {
@@ -251,22 +261,25 @@ public class VisualizerController {
     }
 
     private Color getColorForValue(double value, int index) {
+        // Clamp value to 0-1 range to prevent HSB errors
+        value = Math.max(0.0, Math.min(1.0, value));
+
         switch (currentColorScheme) {
             case "Green Gradient":
-                return Color.hsb(120, 0.7 + value * 0.3, 0.4 + value * 0.6);
+                return Color.hsb(120, Math.min(1.0, 0.7 + value * 0.3), Math.min(1.0, 0.4 + value * 0.6));
 
             case "Blue Gradient":
-                return Color.hsb(200, 0.7 + value * 0.3, 0.4 + value * 0.6);
+                return Color.hsb(200, Math.min(1.0, 0.7 + value * 0.3), Math.min(1.0, 0.4 + value * 0.6));
 
             case "Rainbow":
                 double hue = (index / (double) spectrumData.length) * 360;
-                return Color.hsb(hue, 0.8, 0.5 + value * 0.5);
+                return Color.hsb(hue, 0.8, Math.min(1.0, 0.5 + value * 0.5));
 
             case "Purple Gradient":
-                return Color.hsb(280, 0.7 + value * 0.3, 0.4 + value * 0.6);
+                return Color.hsb(280, Math.min(1.0, 0.7 + value * 0.3), Math.min(1.0, 0.4 + value * 0.6));
 
             case "Fire":
-                return Color.hsb(30 - value * 30, 1.0, 0.5 + value * 0.5);
+                return Color.hsb(Math.max(0, 30 - value * 30), 1.0, Math.min(1.0, 0.5 + value * 0.5));
 
             default:
                 return Color.web("#4ecca3");

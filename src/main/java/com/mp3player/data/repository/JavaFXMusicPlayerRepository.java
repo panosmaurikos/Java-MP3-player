@@ -15,6 +15,7 @@ public class JavaFXMusicPlayerRepository implements MusicPlayerRepository {
     private boolean isPaused = false;
     private double[] equalizerGains = new double[10]; // Store current equalizer settings
     private boolean equalizerEnabled = false;
+    private Runnable onEndOfMediaListener;
 
     @Override
     public void play(Song song) {
@@ -27,6 +28,11 @@ public class JavaFXMusicPlayerRepository implements MusicPlayerRepository {
 
             // Apply equalizer settings to new media player
             applyEqualizerSettings();
+
+            // Setup end of media listener for auto-advance
+            if (onEndOfMediaListener != null) {
+                mediaPlayer.setOnEndOfMedia(onEndOfMediaListener);
+            }
 
             mediaPlayer.play();
             isPaused = false;
@@ -111,6 +117,10 @@ public class JavaFXMusicPlayerRepository implements MusicPlayerRepository {
 
     public MediaPlayer getMediaPlayer() {
         return mediaPlayer;
+    }
+
+    public void setOnEndOfMediaListener(Runnable listener) {
+        this.onEndOfMediaListener = listener;
     }
 
     // Equalizer methods

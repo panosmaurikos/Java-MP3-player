@@ -80,6 +80,17 @@ public class MainController {
                 savePlaylistUseCase,
                 loadPlaylistFileUseCase
         );
+
+        // Setup auto-advance listener for when songs end
+        playerRepository.setOnEndOfMediaListener(() -> {
+            if (viewModel.isRepeatProperty().get()) {
+                // Replay current song
+                viewModel.playCurrentSong();
+            } else {
+                // Advance to next song (handles shuffle internally)
+                viewModel.nextSong();
+            }
+        });
     }
 
     private void setupBindings() {
@@ -155,6 +166,18 @@ public class MainController {
         // Bind shuffle and repeat buttons
         shuffleButton.selectedProperty().bindBidirectional(viewModel.isShuffledProperty());
         repeatButton.selectedProperty().bindBidirectional(viewModel.isRepeatProperty());
+
+        // Make shuffle and repeat mutually exclusive
+        shuffleButton.selectedProperty().addListener((obs, oldVal, newVal) -> {
+            if (newVal && repeatButton.isSelected()) {
+                repeatButton.setSelected(false);
+            }
+        });
+        repeatButton.selectedProperty().addListener((obs, oldVal, newVal) -> {
+            if (newVal && shuffleButton.isSelected()) {
+                shuffleButton.setSelected(false);
+            }
+        });
 
         // Bind play/pause button text
         viewModel.isPlayingProperty().addListener((obs, oldVal, newVal) -> {
