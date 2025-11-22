@@ -68,9 +68,16 @@ public class MainController {
         setupBindings();
         setupProgressUpdater();
         setupSeekFunctionality();
-        // Force favorite button to always start as empty heart
-        favoriteButton.setText("♡");
-        favoriteButton.getStyleClass().remove("active");
+        setupFavoriteButton();
+    }
+
+    private void setupFavoriteButton() {
+        // Use Label as graphic to avoid ellipsis issues
+        Label heartLabel = new Label("♡");
+        heartLabel.setStyle("-fx-font-size: 28px;");
+        favoriteButton.setGraphic(heartLabel);
+        favoriteButton.setText("");
+        favoriteButton.setContentDisplay(javafx.scene.control.ContentDisplay.GRAPHIC_ONLY);
     }
 
     private void setupDependencies() {
@@ -174,8 +181,6 @@ public class MainController {
                 progressSlider.setValue(newVal.doubleValue() * 100);
             }
         });
-        favoriteButton.setText("♡");
-        favoriteButton.getStyleClass().remove("active");
 
         // Bind volume slider
         volumeSlider.valueProperty().addListener((obs, oldVal, newVal) -> {
@@ -567,12 +572,15 @@ public class MainController {
     }
 
     private void updateFavoriteButton(Song song) {
-        if (song != null && song.isFavorite()) {
-            favoriteButton.setText("❤");
-            favoriteButton.getStyleClass().add("active");
-        } else {
-            favoriteButton.setText("♡");
-            favoriteButton.getStyleClass().remove("active");
+        Label heartLabel = (Label) favoriteButton.getGraphic();
+        if (heartLabel != null) {
+            if (song != null && song.isFavorite()) {
+                heartLabel.setText("❤");
+                favoriteButton.getStyleClass().add("active");
+            } else {
+                heartLabel.setText("♡");
+                favoriteButton.getStyleClass().remove("active");
+            }
         }
     }
 

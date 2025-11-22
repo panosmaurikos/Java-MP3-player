@@ -99,11 +99,9 @@
                 <Region HBox.hgrow="ALWAYS"/>
 
                 <!-- Favorite Heart Button -->
-                <Button fx:id="favoriteButton" text="♡" styleClass="favorite-button"
-                       onAction="#onToggleFavorite" prefWidth="50" prefHeight="50">
-                    <font>
-                        <Font size="28.0"/>
-                    </font>
+                <Button fx:id="favoriteButton" styleClass="favorite-button"
+                       onAction="#onToggleFavorite" prefWidth="50" prefHeight="50"
+                       mnemonicParsing="false">
                 </Button>
             </HBox>
 
